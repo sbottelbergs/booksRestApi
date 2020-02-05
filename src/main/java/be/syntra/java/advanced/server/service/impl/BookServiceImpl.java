@@ -1,5 +1,6 @@
 package be.syntra.java.advanced.server.service.impl;
 
+import be.syntra.java.advanced.server.exception.BookNotFoundException;
 import be.syntra.java.advanced.server.model.Book;
 import be.syntra.java.advanced.server.repository.BookRepository;
 import be.syntra.java.advanced.server.service.BookService;
@@ -25,7 +26,14 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public Book getBook(String isbn) {
-        return bookRepository.getBookByIsbn(isbn);
+        Book book = bookRepository.getBookByIsbn(isbn);
+        if (book != null) {
+            return book;
+        } else {
+            throw new BookNotFoundException(
+                    String.format("A book with isbn number %s was not found", isbn)
+            );
+        }
     }
 
 }
