@@ -1,7 +1,7 @@
-package be.syntra.java.advanced.server.repository.impl;
+package be.syntra.java.advanced.server.persistence.repository.impl;
 
-import be.syntra.java.advanced.server.model.Book;
-import be.syntra.java.advanced.server.repository.BookRepository;
+import be.syntra.java.advanced.server.domain.Book;
+import be.syntra.java.advanced.server.persistence.repository.BookRepository;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.PostConstruct;

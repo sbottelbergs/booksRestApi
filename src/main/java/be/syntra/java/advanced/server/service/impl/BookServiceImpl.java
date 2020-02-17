@@ -1,8 +1,8 @@
 package be.syntra.java.advanced.server.service.impl;
 
+import be.syntra.java.advanced.server.domain.Book;
 import be.syntra.java.advanced.server.exception.BookNotFoundException;
-import be.syntra.java.advanced.server.model.Book;
-import be.syntra.java.advanced.server.repository.BookRepository;
+import be.syntra.java.advanced.server.persistence.repository.BookRepository;
 import be.syntra.java.advanced.server.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

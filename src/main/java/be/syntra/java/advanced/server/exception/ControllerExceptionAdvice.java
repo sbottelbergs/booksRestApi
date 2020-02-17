@@ -1,6 +1,6 @@
 package be.syntra.java.advanced.server.exception;
 
-import be.syntra.java.advanced.server.model.ApiError;
+import be.syntra.java.advanced.server.controller.dto.ApiError;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;

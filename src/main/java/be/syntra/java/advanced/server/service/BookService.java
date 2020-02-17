@@ -1,6 +1,6 @@
 package be.syntra.java.advanced.server.service;
 
-import be.syntra.java.advanced.server.model.Book;
+import be.syntra.java.advanced.server.domain.Book;
 
 import java.util.List;
 

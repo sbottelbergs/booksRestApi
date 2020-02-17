@@ -1,4 +1,4 @@
-package be.syntra.java.advanced.server.model;
+package be.syntra.java.advanced.server.controller.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
