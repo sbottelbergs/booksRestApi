@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import java.nio.file.AccessDeniedException;
+
 @RestControllerAdvice
 public class ControllerExceptionAdvice extends ResponseEntityExceptionHandler {
 
@@ -26,6 +28,19 @@ public class ControllerExceptionAdvice extends ResponseEntityExceptionHandler {
                         .code(ex.getStatus().value())
                         .build(),
                 ex.getStatus()
+        );
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public final ResponseEntity<ApiError> handleAccessDeniedException(AccessDeniedException ex) {
+        return new ResponseEntity<>(
+                ApiError.builder()
+                        .title("Access denied")
+                        .message(ex.getMessage())
+                        .status(HttpStatus.FORBIDDEN.getReasonPhrase())
+                        .code(HttpStatus.FORBIDDEN.value())
+                        .build(),
+                HttpStatus.FORBIDDEN
         );
     }
 
