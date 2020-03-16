@@ -19,7 +19,7 @@ public class JsonUtil {
         return this.mapper.readValue(result.getResponse().getContentAsString(), clazz);
     }
 
-    private byte[] toJson(Object object) throws Exception {
+    byte[] toJson(Object object) throws Exception {
         return this.mapper.writeValueAsString(object).getBytes();
     }
 }

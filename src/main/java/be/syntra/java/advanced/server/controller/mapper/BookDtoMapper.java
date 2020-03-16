@@ -23,4 +23,13 @@ public class BookDtoMapper {
     public BookList map(List<Book> books) {
         return new BookList(books.stream().map(this::map).collect(Collectors.toList()));
     }
+
+    public Book map(BookDto book) {
+        return Book.builder()
+                .isbn(book.getIsbn())
+                .author(book.getAuthor())
+                .title(book.getTitle())
+                .price(book.getPrice())
+                .build();
+    }
 }

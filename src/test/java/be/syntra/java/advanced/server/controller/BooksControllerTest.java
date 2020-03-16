@@ -26,6 +26,7 @@ import java.util.List;
 import static be.syntra.java.advanced.server.TestUtils.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
@@ -74,6 +75,8 @@ class BooksControllerTest {
 
         verify(bookService, times(1)).getAllBooks();
         verify(mapper, times(1)).map(books);
+        verifyNoMoreInteractions(mapper);
+        verifyNoMoreInteractions(bookService);
     }
 
     @Test
@@ -95,6 +98,8 @@ class BooksControllerTest {
 
         verify(bookService, times(1)).getBook("123");
         verify(mapper, times(1)).map(aBook());
+        verifyNoMoreInteractions(mapper);
+        verifyNoMoreInteractions(bookService);
     }
 
     @Test
@@ -121,5 +126,25 @@ class BooksControllerTest {
         verify(bookService, times(1)).getBook("123");
         verifyNoMoreInteractions(bookService);
         verifyNoInteractions(mapper);
+    }
+
+    @Test
+    void testAddBook_success() throws Exception {
+        // given
+        final BookDto bookDto = aBookDto();
+        when(mapper.map(aBookDto())).thenReturn(aBook());
+
+        // when - then
+        mockMvc.perform(
+                post("/books")
+                        .content(jsonUtil.toJson(aBookDto()))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isCreated());
+
+        verify(mapper, times(1)).map(aBookDto());
+        verify(bookService, times(1)).addBook(aBook());
+        verifyNoMoreInteractions(mapper);
+        verifyNoMoreInteractions(bookService);
     }
 }

@@ -25,4 +25,12 @@ public class BookMapper {
                 .collect(Collectors.toList());
     }
 
+    public BookEntity map(Book book) {
+        return BookEntity.builder()
+                .author(book.getAuthor())
+                .title(book.getTitle())
+                .price(book.getPrice())
+                .isbn(book.getIsbn())
+                .build();
+    }
 }

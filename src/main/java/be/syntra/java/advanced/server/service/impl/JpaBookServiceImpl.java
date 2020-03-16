@@ -2,6 +2,7 @@ package be.syntra.java.advanced.server.service.impl;
 
 import be.syntra.java.advanced.server.domain.Book;
 import be.syntra.java.advanced.server.exception.BookNotFoundException;
+import be.syntra.java.advanced.server.persistence.entity.BookEntity;
 import be.syntra.java.advanced.server.persistence.repository.JpaBookRepository;
 import be.syntra.java.advanced.server.service.BookMapper;
 import be.syntra.java.advanced.server.service.BookService;
@@ -39,5 +40,12 @@ public class JpaBookServiceImpl implements BookService {
                                 String.format("Book with isbn %s could not be found", isbn)
                         )
                 );
+    }
+
+    @Override
+    @Transactional
+    public void addBook(Book book) {
+        BookEntity bookEntity = mapper.map(book);
+        bookRepository.save(bookEntity);
     }
 }
