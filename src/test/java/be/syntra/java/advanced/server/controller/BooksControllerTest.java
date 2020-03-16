@@ -82,12 +82,13 @@ class BooksControllerTest {
     @Test
     void testGetBook_existingIsbn() throws Exception {
         // given
+        final String isbn = "123";
         when(bookService.getBook(anyString())).thenReturn(aBook());
         when(mapper.map(aBook())).thenReturn(aBookDto());
 
         // when
         MvcResult response = mockMvc
-                .perform(get("/books/123").accept(MediaType.APPLICATION_JSON))
+                .perform(get("/books/{isbn}", isbn).accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();
         final BookDto result = jsonUtil.fromJsonResult(response, BookDto.class);
@@ -96,7 +97,7 @@ class BooksControllerTest {
         final BookDto expected = aBookDto();
         Assertions.assertEquals(expected, result);
 
-        verify(bookService, times(1)).getBook("123");
+        verify(bookService, times(1)).getBook(isbn);
         verify(mapper, times(1)).map(aBook());
         verifyNoMoreInteractions(mapper);
         verifyNoMoreInteractions(bookService);
@@ -105,11 +106,12 @@ class BooksControllerTest {
     @Test
     void testGetBook_nonExistingIsbn() throws Exception {
         // given
+        final String isbn = "123";
         when(bookService.getBook(anyString())).thenThrow(new BookNotFoundException("Not found"));
 
         // when
         MvcResult response = mockMvc
-                .perform(get("/books/123").accept(MediaType.APPLICATION_JSON))
+                .perform(get("/books/{isbn}", isbn).accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
                 .andReturn();
         final ApiError result = jsonUtil.fromJsonResult(response, ApiError.class);
@@ -123,7 +125,7 @@ class BooksControllerTest {
                 .build();
         Assertions.assertEquals(expected, result);
 
-        verify(bookService, times(1)).getBook("123");
+        verify(bookService, times(1)).getBook(isbn);
         verifyNoMoreInteractions(bookService);
         verifyNoInteractions(mapper);
     }

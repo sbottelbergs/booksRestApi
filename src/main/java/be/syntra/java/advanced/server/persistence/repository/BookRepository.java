@@ -1,11 +1,14 @@
 package be.syntra.java.advanced.server.persistence.repository;
 
-import be.syntra.java.advanced.server.domain.Book;
+import be.syntra.java.advanced.server.persistence.entity.BookEntity;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-import java.util.List;
+import javax.transaction.Transactional;
+import java.util.Optional;
 
-public interface BookRepository {
-    List<Book> getBooks();
-
-    Book getBookByIsbn(String isbn);
+@Repository
+public interface BookRepository extends JpaRepository<BookEntity, Long> {
+    @Transactional(Transactional.TxType.MANDATORY)
+    Optional<BookEntity> findByIsbn(String isbn);
 }

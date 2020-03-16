@@ -3,7 +3,7 @@ package be.syntra.java.advanced.server.service.impl;
 import be.syntra.java.advanced.server.domain.Book;
 import be.syntra.java.advanced.server.exception.BookNotFoundException;
 import be.syntra.java.advanced.server.persistence.entity.BookEntity;
-import be.syntra.java.advanced.server.persistence.repository.JpaBookRepository;
+import be.syntra.java.advanced.server.persistence.repository.BookRepository;
 import be.syntra.java.advanced.server.service.BookMapper;
 import be.syntra.java.advanced.server.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,13 +13,13 @@ import javax.transaction.Transactional;
 import java.util.List;
 
 @Service("jpaBookService")
-public class JpaBookServiceImpl implements BookService {
+public class BookServiceImpl implements BookService {
 
-    private JpaBookRepository bookRepository;
+    private BookRepository bookRepository;
     private BookMapper mapper;
 
     @Autowired
-    public JpaBookServiceImpl(JpaBookRepository bookRepository, BookMapper mapper) {
+    public BookServiceImpl(BookRepository bookRepository, BookMapper mapper) {
         this.bookRepository = bookRepository;
         this.mapper = mapper;
     }

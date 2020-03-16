@@ -1,9 +1,11 @@
 package be.syntra.java.advanced.server.controller.dto;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 
 @Getter
-@Setter
 @AllArgsConstructor
 @Builder
 @EqualsAndHashCode
