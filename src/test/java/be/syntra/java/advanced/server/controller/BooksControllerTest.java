@@ -1,8 +1,11 @@
 package be.syntra.java.advanced.server.controller;
 
+import be.syntra.java.advanced.server.controller.dto.ApiError;
+import be.syntra.java.advanced.server.controller.dto.BookDto;
 import be.syntra.java.advanced.server.controller.dto.BookList;
 import be.syntra.java.advanced.server.controller.mapper.BookDtoMapper;
 import be.syntra.java.advanced.server.domain.Book;
+import be.syntra.java.advanced.server.exception.BookNotFoundException;
 import be.syntra.java.advanced.server.security.CustomAccessDeniedHandler;
 import be.syntra.java.advanced.server.security.CustomAuthenticationEntryPoint;
 import be.syntra.java.advanced.server.service.BookService;
@@ -12,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -58,17 +62,64 @@ class BooksControllerTest {
         when(mapper.map(books)).thenReturn(new BookList(List.of(aBookDto(), anotherBookDto())));
 
         // when
-        MvcResult result = mockMvc
+        MvcResult response = mockMvc
                 .perform(get("/books").accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();
-        BookList bookList = jsonUtil.fromJsonResult(result, BookList.class);
+        BookList result = jsonUtil.fromJsonResult(response, BookList.class);
 
         // then
         BookList expected = new BookList(List.of(aBookDto(), anotherBookDto()));
-        Assertions.assertEquals(expected, bookList);
+        Assertions.assertEquals(expected, result);
 
         verify(bookService, times(1)).getAllBooks();
         verify(mapper, times(1)).map(books);
+    }
+
+    @Test
+    void testGetBook_existingIsbn() throws Exception {
+        // given
+        when(bookService.getBook(anyString())).thenReturn(aBook());
+        when(mapper.map(aBook())).thenReturn(aBookDto());
+
+        // when
+        MvcResult response = mockMvc
+                .perform(get("/books/123").accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn();
+        final BookDto result = jsonUtil.fromJsonResult(response, BookDto.class);
+
+        // then
+        final BookDto expected = aBookDto();
+        Assertions.assertEquals(expected, result);
+
+        verify(bookService, times(1)).getBook("123");
+        verify(mapper, times(1)).map(aBook());
+    }
+
+    @Test
+    void testGetBook_nonExistingIsbn() throws Exception {
+        // given
+        when(bookService.getBook(anyString())).thenThrow(new BookNotFoundException("Not found"));
+
+        // when
+        MvcResult response = mockMvc
+                .perform(get("/books/123").accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+                .andReturn();
+        final ApiError result = jsonUtil.fromJsonResult(response, ApiError.class);
+
+        // then
+        final ApiError expected = ApiError.builder()
+                .title("Book not found")
+                .message("Not found")
+                .code(HttpStatus.NOT_FOUND.value())
+                .status(HttpStatus.NOT_FOUND.getReasonPhrase())
+                .build();
+        Assertions.assertEquals(expected, result);
+
+        verify(bookService, times(1)).getBook("123");
+        verifyNoMoreInteractions(bookService);
+        verifyNoInteractions(mapper);
     }
 }
